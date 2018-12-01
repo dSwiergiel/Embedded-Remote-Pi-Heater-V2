@@ -1,0 +1,11 @@
+{
+  "name": "client-pi",
+  "version": "1.0.0",
+  "description": "Runs on the raspberry pi. Controls I/O on the GIPO pins based off commands sent form the web client interface.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Deven Swiergiel",
+  "license": "MIT"
+}

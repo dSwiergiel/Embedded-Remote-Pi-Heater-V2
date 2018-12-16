@@ -4,6 +4,9 @@ const Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
 const POWER = new Gpio(4, 'out'); //use GPIO pin 4 as output
 const TEMP = new Gpio(3, 'out'); //use GPIO pin 3 as output
 
+
+var heaterOn = false;
+
 // Trun off relays (1 is LOW/off for the relays I have)
 POWER.writeSync(1, function (err) {
 });
@@ -29,55 +32,36 @@ socket.on("connect", function () {
 socket.on('updateRelayState', function (newRelayState) {
 
   // only change relay if new relay state is different from what is the current relay state on the client-pi
-  if (newRelayState != POWER.readSync()) {
-
+  // if (newRelayState != POWER.readSync()) {
+  if (newRelayState == 0) {
     // send new state to relay
-    POWER.writeSync(newRelayState, function (err) {
+    // POWER.writeSync(newRelayState, function (err) {
 
-      // if error, turn relay off
-      if (err) {
-        POWER.write(1);
-        TEMP.write(1);
+    //   // if error, turn relay off
+    //   if (err) {
+    //     POWER.write(1);
+    //     TEMP.write(1);
 
-        console.log(err)
+    //     console.log(err)
 
-        // tell server pi failed to update
-        socket.emit('updateStateFailure', err);
+    //     // tell server pi failed to update
+    //     socket.emit('updateStateFailure', err);
 
-        // else do work and emit current state
-      } else {
+    //     // else do work and emit current state
+    //   } else {
 
-        socket.emit('updatedRelayState', RELAY.readSync());
-      }
+    //     socket.emit('updatedRelayState', RELAY.readSync());
+    //   }
+    // });
 
-
-
-
-      // }); //turn relay on or off
-      // POWER.writeSync(0, function (err) {
-      // });
-      // TEMP.writeSync(0, function (err) {
-      // });
-      // sleep(100);
-      // POWER.writeSync(1, function (err) {
-      // });
-      // sleep(100);
-
-      // if (newRelayState == 0) {
-      //   for (var i = 0; i < 21; i++) {
-      //     TEMP.writeSync(0, function (err) {
-      //     });
-      //     sleep(50);
-      //     console.log(TEMP.readSync())
-      //     TEMP.writeSync(1, function (err) {
-      //     });
-      //     sleep(50);
-
-      //   }
-      // }
-
+    // turn heater on
+    POWER.writeSync(0, function (err) {
     });
-
+    sleep(100);
+    POWER.writeSync(1, function (err) {
+    });
+    sleep(100);
+    heaterOn = true;
 
     console.log("RELAY STATE", newRelayState);
 
@@ -93,6 +77,16 @@ socket.on('updateRelayState', function (newRelayState) {
 
       }
     }
+
+  } else {
+    // turn heater off
+    POWER.writeSync(0, function (err) {
+    });
+    sleep(100);
+    POWER.writeSync(1, function (err) {
+    });
+    sleep(100);
+    heaterOn = false;
 
   }
 });

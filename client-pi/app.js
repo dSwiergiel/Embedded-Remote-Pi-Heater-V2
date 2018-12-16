@@ -51,7 +51,7 @@ socket.on('updateRelayState', function (newRelayState) {
       }
 
 
-      console.log(newRelayState);
+      console.log("RELAY STATE",newRelayState);
 
       // if relay is set to on, turn temp down to 75 
       if (newRelayState == 0) {

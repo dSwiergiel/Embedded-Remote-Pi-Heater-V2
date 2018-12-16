@@ -3,10 +3,11 @@ const Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
 
 const POWER = new Gpio(4, 'out'); //use GPIO pin 4 as output
 const TEMP = new Gpio(3, 'out'); //use GPIO pin 3 as output
+
 // Trun off relays
-POWER.writeSync(0, function (err) {
+POWER.writeSync(1, function (err) {
 });
-TEMP.writeSync(0, function (err) {
+TEMP.writeSync(1, function (err) {
 });
 
 // on connection to server

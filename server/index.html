@@ -1,0 +1,651 @@
+<!--
+Author: Deven Swiergiel
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+  <title>Pi RelayController</title>
+  <!-- (CDNs) use bootstrap, font-awesome, google fonts, and jQuery without locally hosting entire library -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+    crossorigin="anonymous">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+    crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Titillium+Web" rel="stylesheet">
+
+
+  <style>
+    body {
+      font-family: 'Open Sans Condensed', sans-serif !important;
+      margin-top: 100px;
+      background: #2c3e50;
+      color: #ddd;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0px;
+      font-family: 'Titillium Web', sans-serif;
+    }
+
+    h2 {
+      font-family: 'Open Sans Condensed', sans-serif !important;
+    }
+
+    .mobileHeader {
+      font-size: 40px;
+    }
+
+    .mobileSubHeader {
+      font-weight: 100px;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+
+    .col-md-6 {
+      max-width: 350px;
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+
+    .controlPanel {
+      margin-top: 15vh;
+      background-color: #333;
+      border: 1px;
+      padding-top: 20px;
+      padding-bottom: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+      border-radius: 3px;
+      max-width: 375px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .innerPanel {
+      background-color: #575757;
+      border: 1px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+      border-radius: 3px;
+      max-width: 375px;
+      margin-top: 30px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .inputPanel {
+      background: rgb(122, 121, 121);
+      border-style: solid;
+      border-width: 2px;
+      border-color: rgb(68, 68, 68);
+      /* margin-top: auto;
+       margin-bottom: auto; */
+      padding-top: 10px;
+      padding-bottom: 15px;
+      padding-right: 30px;
+      padding-left: 30px;
+
+      border-radius: 3px;
+    }
+
+    .outer {
+      width: 100%;
+      text-align: center;
+    }
+
+    .inner {
+      display: inline-block;
+    }
+
+    .button {
+      font-family: 'Open Sans Condensed', sans-serif !important;
+      font-size: 22px;
+      font-weight: 900;
+      min-width: 100%;
+      border: none;
+      background-color: #cfcdcd;
+      color: #333;
+      padding: 2px 30px;
+      margin: 15px 0px 0px 0px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      border-radius: 3px;
+    }
+
+    .button:active {
+      background-color: #a3a2a2;
+    }
+
+    .button:focus {
+      outline: none;
+    }
+
+    .output {
+      font-family: 'Open Sans Condensed', sans-serif !important;
+      background-color: white;
+      color: #333;
+      border-style: solid;
+
+      border-radius: 1px;
+      max-width: 375px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 10px !important;
+      -webkit-appearance: none;
+    }
+
+    /* TIMER AND TOGGLE */
+
+    /* AM PM TOGGLE */
+
+    .AMPM {
+      position: relative;
+      width: 56px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    .AMPM-checkbox {
+      display: none;
+    }
+
+    .AMPM-label {
+      display: block;
+      overflow: hidden;
+      cursor: pointer;
+      border: 0px solid #333333;
+      border-radius: 2px !important;
+    }
+
+    .AMPM-inner {
+      display: block;
+      width: 200%;
+      margin-left: -100%;
+      transition: margin 0.3s ease-in 0s;
+    }
+
+    .AMPM-inner:before,
+    .AMPM-inner:after {
+      display: block;
+      float: left;
+      width: 50%;
+      height: 30px;
+      padding-top: 3px;
+      line-height: 24px;
+      font-size: 14px !important;
+      color: rgb(190, 190, 190) !important;
+      font-family: Trebuchet, Arial, sans-serif;
+      font-weight: lighter;
+      box-sizing: border-box;
+    }
+
+    .AMPM-inner:before {
+      content: "AM";
+      padding-left: 5px;
+      background-color: #333333;
+      color: #DDDDDD;
+    }
+
+    .AMPM-inner:after {
+      content: "PM";
+      padding-right: 5px;
+      background-color: #333333;
+      color: #DDDDDD;
+      text-align: right;
+    }
+
+    .AMPM-switch {
+      display: block;
+      width: 24px;
+      margin: 2px;
+      background: #FFFFFF;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 28px;
+      border: 2px solid #333333;
+      border-radius: 4px;
+      transition: all 0.3s ease-in 0s;
+    }
+
+    .AMPM-checkbox:checked+.AMPM-label .AMPM-inner {
+      margin-left: 0;
+    }
+
+    .AMPM-checkbox:checked+.AMPM-label .AMPM-switch {
+      right: 0px;
+    }
+
+    /* END AM PM TOGGLE */
+
+    .timerInput {
+      width: 40px;
+      padding: 5px;
+      height: 30px !important;
+      display: inline-block;
+      border-radius: 2px !important;
+      /* remove the strong OSX influence from Webkit */
+      -webkit-appearance: none;
+      color: lightgray
+    }
+
+    select {
+      /* background: rgb(66, 66, 66)!important;
+       color: #ddd!important; */
+      background: rgb(51, 51, 51) !important;
+      color: rgb(190, 190, 190) !important;
+    }
+
+    #hours {
+      width: 31px;
+    }
+
+    #minutes {
+      width: 31px;
+      margin-right: 5px;
+    }
+
+    #AMPM {
+      width: 37px
+    }
+
+    .timer {
+      height: 50px;
+    }
+
+    .time {
+      max-width: 150px;
+      float: right;
+      margin-top: 5px;
+    }
+
+    .switch {
+      margin-top: 8px;
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 24px;
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgb(51, 51, 51);
+      -webkit-transition: .2s;
+      transition: .2s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .2s;
+      transition: .2s;
+    }
+
+    input:checked+.slider {
+      background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(22px);
+      -ms-transform: translateX(22px);
+      transform: translateX(22px);
+    }
+
+    /* Rounded sliders */
+
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+
+    /* END TIMER AND TOGGLE */
+
+    .ToolTip {
+      position: relative;
+      display: inline-block;
+
+    }
+
+    .ToolTip .TipText {
+      width: 200px;
+      background-color: black;
+      color: lightgrey;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 120%;
+      left: 255%;
+      margin-left: -100px;
+      font-size: 20px !important;
+      opacity: 0;
+      /* define initial transition property */
+      -webkit-transition: opacity .2s ease-in-out;
+      /* define transitions */
+      transition: opacity .2s ease-in-out;
+      /* define initial transition property */
+    }
+
+    .ToolTip .TipText::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 20%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: black transparent transparent transparent;
+    }
+
+    .ToolTip:hover .TipText {
+      /* visibility: visible; */
+      opacity: .85;
+      font-size: 20px !important;
+    }
+
+    @media (max-width: 767px) {
+      h5 {
+        font-size: 16px;
+      }
+      h6 {
+        font-size: 15px;
+      }
+      .mobileHeader {
+        font-size: 40px;
+      }
+      .mobileSubHeader {
+        margin-bottom: 10px;
+      }
+      .mt-4 {
+        margin-top: 10px !important;
+      }
+    }
+
+    @media(max-width: 450px) {
+      .mobileHeader {
+        font-size: 35px;
+        margin-bottom: 5px;
+      }
+      h2 {
+        font-size: 20px !important;
+        margin-bottom: 10px !important;
+      }
+      .mobileSubHeader {
+        font-size: 18px;
+      }
+      .marginTop {
+        margin-top: 10px;
+      }
+      h5 {
+        font-size: 16px;
+      }
+
+    }
+
+    @media(max-width: 400px) {
+      .inputPanel {
+        padding-right: 25px;
+        padding-left: 25px;
+      }
+    }
+
+    @media (max-width: 374px) {
+
+
+      h5 {
+        font-size: 16px;
+      }
+
+    }
+
+    @media (max-width: 345px) {
+
+      .controlPanel {
+        padding-bottom: 10px;
+      }
+
+      .button {
+        padding: 2px 20px;
+      }
+    }
+
+    @media(max-width: 350px) {
+      .mobileHeader {
+        font-size: 30px;
+      }
+      .controlPanel {
+        margin-top: 15vh;
+        padding-top: 20px;
+        padding-bottom: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+        border-radius: 3px;
+        max-width: 375px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .innerPanel {
+
+        padding-top: 10px;
+        padding-bottom: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+        max-width: 375px;
+        margin-top: 30px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .inputPanel {
+
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-right: 10px;
+        padding-left: 10px;
+
+      }
+    }
+  </style>
+
+</head>
+
+<body class="marginTop container" onload="">
+
+  <div class="controlPanel">
+    <title>Relay Control</title>
+
+    <h1 class="display-4 text-center mobileHeader">Pi Relay Controller</h1>
+    <h2 class="lead text-center mt-3" style="margin-bottom: 20px; font-size: 21px">Created by Deven Swiergiel</h2>
+
+    <div class="innerPanel">
+      <div id="output" class="col-md-6" style="padding-right: 0px; padding-left: 0px;">
+        <div class="card output">
+          <div class="mt-2 mb-2 ml-1 mr-1">
+            <div class="mr-2 ml-2">
+              <h1>Relay Status:
+                <div class="pull-right" id="relayState">OFFLINE</div>
+              </h1>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 inputPanel">
+
+        <!-- Timer switch -->
+        <!-- <div class="timer">
+
+          <h2 class="pull-left mr-2" style="font-size: 34px!important;">
+            <div class="ToolTip">
+              <span class="TipText">Timer
+                <br>If set, inverts the relay state at the specified time.</span>
+              <i class="fa fa-clock-o" style="color: rgb(201, 199, 199)" aria-hidden="true"></i>
+            </div>
+          </h2>
+          <label class="switch pull-left">
+            <input id="timerToggle" type="checkbox">
+            <span class="slider round"></span>
+          </label>
+
+          <div class="time">
+            <select id="hours" name="hour" class="timerInput form-control form-control-md">
+            </select>
+            <h1 style="margin-left: 2px; margin-right: 2px; display: inline-block;">:</h1>
+            <select id="minutes" name="minute" class="timerInput form-control form-control-md">
+            </select>
+
+
+            <div class="pull-right">
+              <div class="AMPM">
+                <input type="checkbox" name="AMPM" class="AMPM-checkbox" id="AMPMtoggle">
+                <label class="AMPM-label" for="AMPMtoggle">
+                  <span class="AMPM-inner"></span>
+                  <span class="AMPM-switch"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+
+        <div class="outer">
+          <button class="button inner" type="button" id="relayToggle">OFF</button>
+        </div>
+        <!-- <div class="outer">
+                  <button id="on" class="button inner" type="button" onclick="relayState(this.innerHTML)">ON</button>
+                  <button id="off" class="button inner" type="button" onclick="relayState(this.innerHTML)">OFF</button>
+              </div> -->
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+  <script type="text/javascript">
+
+    var socket = io.connect();
+    var connected = false;
+    var updateFailed = false;
+
+    // // on connection to server
+    socket.on('connect', function () {
+      // ajax call gets current pi info from database
+      jQuery.ajax({
+        url: '/getRelayInfo/1',
+        success: function (result) {
+
+          // on success, update controls and text to current info from database
+          updatePiControls(result);
+          socket.emit('getState');
+
+        },
+      });
+      connected = true;
+      console.log('connected to server');
+    });
+    // // adds options to minutes and hours dd on page load
+    // $(function () {
+    //   for (var i = 0; i < 60; i++) {
+    //     $('#minutes').append('<option value="' + i + '">' + ('0' + i).slice(-2) + '</option>');
+    //     if (i > 0 && i < 13) {
+    //       if (i == 12) {
+    //         $('#hours').append('<option selected value="' + i + '">' + ('0' + i).slice(-2) + '</option>');
+    //       } else {
+    //         $('#hours').append('<option value="' + i + '">' + ('0' + i).slice(-2) + '</option>');
+    //       }
+    //     }
+    //   }
+    // });
+
+    // the server emits relayState when the pi connects to it
+    socket.on('relayState', function (relayState) {
+      connected = true;
+      if (relayState == 1) {
+        $('#relayState').text("ON");
+        $('#relayToggle').text("OFF");
+
+      } else if (relayState == 0) {
+        $('#relayState').text("OFF");
+        $('#relayToggle').text("ON");
+      } else if (relayState = "UPDATE FAILED") {
+        $('#relayState').text("OFF, UPDATE FAILED");
+        updateFailed = true;
+      }
+    });
+
+
+    $("#relayToggle").click(function () {
+
+      var newState;
+      if (connected && updateFailed == false) {
+
+        if (this.innerHTML === "ON") {
+          $('#relayToggle').text("OFF");
+          $('#relayState').text("ON");
+          newState = 1; // 0 is HIGH state for my relay
+        } else {
+          $('#relayToggle').text("ON");
+          $('#relayState').text("OFF");
+          newState = 0; // 1 is LOW state for my relay
+        }
+        socket.emit("stateChanged", newState);
+      }
+
+    });
+
+    socket.on('pi-disconnected', function () {
+      $('#relayState').text("OFFLINE");
+      connected = false;
+    })
+
+    socket.on('disconnect', function () {
+      $('#relayState').text("OFFLINE");
+      connected = false;
+      console.log('disconnected from server');
+    })
+  </script>
+</body>
+
+</html>

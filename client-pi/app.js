@@ -14,12 +14,12 @@ socket.on("connect", function () {
   console.log("Connected to server");
 
 
-  socket.emit('storeClientInfo', { customId: "pi-relay-1" });
+  // socket.emit('storeClientInfo', { customId: "pi-relay-1" });
 
-  socket.on('getStatus', function () {
-    console.log('gotStatus');
-    socket.emit('currentRelayState', RELAY.readSync());
-  })
+  // socket.on('getStatus', function () {
+  //   console.log('gotStatus');
+  //   socket.emit('currentRelayState', RELAY.readSync());
+  // })
 
 });
 
@@ -42,11 +42,11 @@ socket.on('updateRelayState', function (newRelayState) {
   POWER.writeSync(0, function (err) {
   });
   sleep(100);
-  POWER.writeSync(1, function (err) {
+  TEMP.writeSync(0, function (err) {
   });
   sleep(100);
 
-  if (newRelayState == 0) {
+  if (newRelayState == 1) {
     for (var i = 0; i < 21; i++) {
       TEMP.writeSync(0, function (err) {
       });

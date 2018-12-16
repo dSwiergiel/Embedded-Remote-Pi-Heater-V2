@@ -13,7 +13,16 @@ TEMP.writeSync(1, function (err) {
 // on connection to server
 socket.on("connect", function () {
   console.log("Connected to server");
+  for (var i = 0; i < 21; i++) {
+    TEMP.writeSync(0, function (err) {
+    });
+    sleep(50);
+    console.log(TEMP.readSync())
+    TEMP.writeSync(1, function (err) {
+    });
+    sleep(50);
 
+  }
 
   // socket.emit('storeClientInfo', { customId: "pi-relay-1" });
 

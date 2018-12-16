@@ -51,20 +51,6 @@ socket.on('updateRelayState', function (newRelayState) {
       }
 
 
-      console.log("RELAY STATE",newRelayState);
-
-      // if relay is set to on, turn temp down to 75 
-      if (newRelayState == 0) {
-        for (var i = 0; i < 21; i++) {
-          TEMP.writeSync(0, function (err) {
-          });
-          sleep(50);
-          TEMP.writeSync(1, function (err) {
-          });
-          sleep(50);
-
-        }
-      }
 
 
       // }); //turn relay on or off
@@ -91,6 +77,23 @@ socket.on('updateRelayState', function (newRelayState) {
       // }
 
     });
+
+
+    console.log("RELAY STATE", newRelayState);
+
+    // if relay is set to on, turn temp down to 75 
+    if (newRelayState == 0) {
+      for (var i = 0; i < 21; i++) {
+        TEMP.writeSync(0, function (err) {
+        });
+        sleep(50);
+        TEMP.writeSync(1, function (err) {
+        });
+        sleep(50);
+
+      }
+    }
+
   }
 });
 

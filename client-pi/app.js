@@ -36,7 +36,10 @@ socket.on('updateRelayState', function (newRelayState) {
 
       // if error, turn relay off
       if (err) {
-        RELAY.write(1);
+        POWER.write(1);
+        TEMP.write(1);
+
+        console.log(err)
 
         // tell server pi failed to update
         socket.emit('updateStateFailure', err);

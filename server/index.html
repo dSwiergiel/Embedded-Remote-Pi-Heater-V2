@@ -602,11 +602,11 @@ Author: Deven Swiergiel
     // the server emits relayState when the pi connects to it
     socket.on('relayState', function (relayState) {
       connected = true;
-      if (relayState == 1) {
+      if (relayState == 0) {
         $('#relayState').text("ON");
         $('#relayToggle').text("OFF");
 
-      } else if (relayState == 0) {
+      } else if (relayState == 1) {
         $('#relayState').text("OFF");
         $('#relayToggle').text("ON");
       } else if (relayState = "UPDATE FAILED") {
@@ -624,11 +624,11 @@ Author: Deven Swiergiel
         if (this.innerHTML === "ON") {
           $('#relayToggle').text("OFF");
           $('#relayState').text("ON");
-          newState = 1; // 0 is HIGH state for my relay
+          newState = 0; // 0 is HIGH state for my relay
         } else {
           $('#relayToggle').text("ON");
           $('#relayState').text("OFF");
-          newState = 0; // 1 is LOW state for my relay
+          newState = 1; // 1 is LOW state for my relay
         }
         socket.emit("stateChanged", newState);
       }

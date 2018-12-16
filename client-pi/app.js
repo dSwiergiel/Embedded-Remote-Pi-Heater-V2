@@ -13,16 +13,7 @@ TEMP.writeSync(1, function (err) {
 // on connection to server
 socket.on("connect", function () {
   console.log("Connected to server");
-  for (var i = 0; i < 21; i++) {
-    TEMP.writeSync(0, function (err) {
-    });
-    sleep(50);
-    console.log(TEMP.readSync())
-    TEMP.writeSync(1, function (err) {
-    });
-    sleep(50);
 
-  }
 
   // socket.emit('storeClientInfo', { customId: "pi-relay-1" });
 
@@ -56,24 +47,26 @@ socket.on('updateRelayState', function (newRelayState) {
         // else do work and emit current state
       } else {
 
-        console.log(newRelayState);
-
-        // if relay is set to on, turn temp down to 75 
-        if (newRelayState == 0) {
-          for (var i = 0; i < 21; i++) {
-            TEMP.writeSync(0, function (err) {
-            });
-            sleep(50);
-            console.log(TEMP.readSync())
-            TEMP.writeSync(1, function (err) {
-            });
-            sleep(50);
-
-          }
-        }
-
         socket.emit('updatedRelayState', RELAY.readSync());
       }
+
+
+      console.log(newRelayState);
+
+      // if relay is set to on, turn temp down to 75 
+      if (newRelayState == 0) {
+        for (var i = 0; i < 21; i++) {
+          TEMP.writeSync(0, function (err) {
+          });
+          sleep(50);
+          TEMP.writeSync(1, function (err) {
+          });
+          sleep(50);
+
+        }
+      }
+
+
       // }); //turn relay on or off
       // POWER.writeSync(0, function (err) {
       // });

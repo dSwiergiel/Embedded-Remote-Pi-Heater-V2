@@ -4,7 +4,7 @@ const Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
 const POWER = new Gpio(4, 'out'); //use GPIO pin 4 as output
 const TEMP = new Gpio(3, 'out'); //use GPIO pin 3 as output
 
-// Trun off relays
+// Trun off relays (1 is LOW/off for the relays I have)
 POWER.writeSync(1, function (err) {
 });
 TEMP.writeSync(1, function (err) {
@@ -24,19 +24,42 @@ socket.on("connect", function () {
 
 });
 
+
+// the web interface has signaled to change turn the pi on or off
 socket.on('updateRelayState', function (newRelayState) {
 
-  if (newRelayState != POWER.readSync()) { //only change relay if status has changed
+  // only change relay if new relay state is different from what is the current relay state on the client-pi
+  if (newRelayState != POWER.readSync()) {
+
     // send new state to relay
     POWER.writeSync(newRelayState, function (err) {
 
-      console.log(newRelayState);
-
       // if error, turn relay off
       if (err) {
-        // RELAY.write(1);
+        RELAY.write(1);
+
+        // tell server pi failed to update
         socket.emit('updateStateFailure', err);
-      } else {// else emit current state
+
+        // else do work and emit current state
+      } else {
+
+        console.log(newRelayState);
+
+        // if relay is set to on, turn temp down to 75 
+        if (newRelayState == 0) {
+          for (var i = 0; i < 21; i++) {
+            TEMP.writeSync(0, function (err) {
+            });
+            sleep(50);
+            console.log(TEMP.readSync())
+            TEMP.writeSync(1, function (err) {
+            });
+            sleep(50);
+
+          }
+        }
+
         socket.emit('updatedRelayState', RELAY.readSync());
       }
       // }); //turn relay on or off
@@ -49,7 +72,7 @@ socket.on('updateRelayState', function (newRelayState) {
       // });
       // sleep(100);
 
-      // if (newRelayState == 1) {
+      // if (newRelayState == 0) {
       //   for (var i = 0; i < 21; i++) {
       //     TEMP.writeSync(0, function (err) {
       //     });

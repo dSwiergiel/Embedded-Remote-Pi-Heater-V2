@@ -572,16 +572,16 @@ Author: Deven Swiergiel
     // // on connection to server
     socket.on('connect', function () {
       // ajax call gets current pi info from database
-      jQuery.ajax({
-        url: '/getRelayInfo/1',
-        success: function (result) {
+      // jQuery.ajax({
+      //   url: '/getRelayInfo/1',
+      //   success: function (result) {
 
-          // on success, update controls and text to current info from database
-          updatePiControls(result);
-          socket.emit('getState');
+      //     // on success, update controls and text to current info from database
+      //     updatePiControls(result);
+      //     socket.emit('getState');
 
-        },
-      });
+      //   },
+      // });
       connected = true;
       console.log('connected to server');
     });

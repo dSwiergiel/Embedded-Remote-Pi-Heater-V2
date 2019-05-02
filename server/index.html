@@ -507,8 +507,7 @@ Author: Deven Swiergiel
       <div class="col-md-6 inputPanel">
 
         <!-- Timer switch -->
-        <!-- <div class="timer">
-
+        <div class="timer">
           <h2 class="pull-left mr-2" style="font-size: 34px!important;">
             <div class="ToolTip">
               <span class="TipText">Timer
@@ -539,7 +538,7 @@ Author: Deven Swiergiel
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
 
 
         <div class="outer">
@@ -586,18 +585,18 @@ Author: Deven Swiergiel
       console.log('connected to server');
     });
     // // adds options to minutes and hours dd on page load
-    // $(function () {
-    //   for (var i = 0; i < 60; i++) {
-    //     $('#minutes').append('<option value="' + i + '">' + ('0' + i).slice(-2) + '</option>');
-    //     if (i > 0 && i < 13) {
-    //       if (i == 12) {
-    //         $('#hours').append('<option selected value="' + i + '">' + ('0' + i).slice(-2) + '</option>');
-    //       } else {
-    //         $('#hours').append('<option value="' + i + '">' + ('0' + i).slice(-2) + '</option>');
-    //       }
-    //     }
-    //   }
-    // });
+    $(function () {
+      for (var i = 0; i < 60; i++) {
+        $('#minutes').append('<option value="' + i + '">' + ('0' + i).slice(-2) + '</option>');
+        if (i > 0 && i < 13) {
+          if (i == 12) {
+            $('#hours').append('<option selected value="' + i + '">' + ('0' + i).slice(-2) + '</option>');
+          } else {
+            $('#hours').append('<option value="' + i + '">' + ('0' + i).slice(-2) + '</option>');
+          }
+        }
+      }
+    });
 
     // the server emits relayState when the pi connects to it
     socket.on('relayState', function (relayState) {

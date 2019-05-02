@@ -33,26 +33,8 @@ socket.on('updateRelayState', function (newRelayState) {
 
   // only change relay if new relay state is different from what is the current relay state on the client-pi
   // if (newRelayState != POWER.readSync()) {
-  if (newRelayState == 0) {
+  if (newRelayState == 0 && !heaterOn) {
     // send new state to relay
-    // POWER.writeSync(newRelayState, function (err) {
-
-    //   // if error, turn relay off
-    //   if (err) {
-    //     POWER.write(1);
-    //     TEMP.write(1);
-
-    //     console.log(err)
-
-    //     // tell server pi failed to update
-    //     socket.emit('updateStateFailure', err);
-
-    //     // else do work and emit current state
-    //   } else {
-
-    //     socket.emit('updatedRelayState', RELAY.readSync());
-    //   }
-    // });
 
     // turn heater on
     POWER.writeSync(0, function (err) {
@@ -65,7 +47,7 @@ socket.on('updateRelayState', function (newRelayState) {
 
     console.log("RELAY STATE", newRelayState);
 
-    // if relay is set to on, turn temp down to 75 
+    // if relay is set to on, turn temp down to 65 
     if (newRelayState == 0) {
       for (var i = 0; i < 21; i++) {
         TEMP.writeSync(0, function (err) {

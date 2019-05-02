@@ -6,14 +6,17 @@ const port = 5555;
 
 // serve the pi controller page on get request
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/login.html');
+});
+app.get('/heatcontroller', function (req, res) {
+    res.sendFile(__dirname + '/heatcontroller.html');
 });
 
 
 io.on('connection', function (socket) {
     console.log('a user connected');
 
-    socket.on('stateChanged', function(state){
+    socket.on('stateChanged', function (state) {
         console.log("NEW RELAY STATE:", state)
 
         socket.broadcast.emit('updateRelayState', state);
